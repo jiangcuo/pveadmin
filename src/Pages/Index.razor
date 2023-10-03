@@ -3,3 +3,20 @@
 <h1>Hello, world!</h1>
 
 欢迎使用PveAdmin
+
+<div class="line">
+    <button class="empty" @onclick="@GetNode">点击测试</button>
+</div>
+
+
+@code{
+
+    public async static void GetNode()
+    {
+        await Options.GetResAsync();
+        await Application.Current.MainPage.DisplayAlert("测试成功", Vars.NodeList.ToString(), "确定");
+    }
+
+    
+
+}

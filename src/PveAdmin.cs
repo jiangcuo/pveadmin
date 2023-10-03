@@ -29,11 +29,13 @@ public class Vars {
     public static string Path { get; set; } = null;
     public static string ConfigFile { get; set; } = null;
     public static string LogFile { get; set; } = null;
+    public static string NodeIp { get; set; } = null;
+    public static string NodeName { get; set; } = null;
     public static string UserPasswordEntryed { get; set; } = null;
     public static bool SslVerified { get; set; } = true;
-    public static JObject VmList { get; set; }
-    public static JObject NodeList { get; set; }
-    public static JObject StorageList { get; set; }
+    public static JObject VmList { get; set; } = null;
+    public static JObject NodeList { get; set; } = null;
+    public static JObject StorageList { get; set; } = null;
 
 }
 
@@ -55,8 +57,12 @@ public class Options
             res = await client.Get("/cluster/resources?type=storage");
             datas = JsonConvert.SerializeObject(res.ResponseToDictionary, Newtonsoft.Json.Formatting.Indented);
             Vars.StorageList = JObject.Parse(datas);
-
         }
+        else {
+           
+            await Application.Current.MainPage.DisplayAlert("测试失败", Vars.Host.ToString()+" " + client.LastResult.StatusCode.ToString(), "确定");
+        }
+
     }
 
     public static void SaveConfig()
@@ -103,7 +109,15 @@ public class Options
                 Vars.UserFullname = tempdata["username"].ToString();
                 Vars.UserPasswordEntryed = tempdata["password"].ToString();
                 Vars.Host = tempdata["host"].ToString();
-
+                string[] UserNameParse = Vars.UserFullname.Split(new char[] { '@' });
+                try
+                {
+                    Vars.UserName = UserNameParse[0];
+                    Vars.UserDomain = UserNameParse[1];
+                }
+                catch {
+                    await Application.Current.MainPage.DisplayAlert("提示", "用户名称不正确", "确定");
+                }
                 try
                 {   // 尝试解密密码
                     // 如果输入框内的密码等于加密密码，
