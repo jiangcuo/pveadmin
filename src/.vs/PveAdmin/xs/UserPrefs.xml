@@ -1,0 +1,31 @@
+﻿<Properties StartupConfiguration="{8292B337-AF5C-4BFE-BFB7-2C3BA8E74727}|Default">
+  <MonoDevelop.Ide.ItemProperties.PveAdmin PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.804E0CF0-0DAB-407D-AF6A-E42B242B7C89" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Pages/Vm.razor">
+    <Files>
+      <File FileName="Pages/Index.razor" Line="6" Column="1" />
+      <File FileName="Pages/Setting.razor" Line="14" Column="1" />
+      <File FileName="Pages/Monitor.razor" Line="1" Column="1" />
+      <File FileName="Pages/Vm.razor" Line="5" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="PveAdmin" expanded="True">
+            <Node name="PveAdmin" selected="True" />
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <Xamarin.Addins.Core.Project ActiveDebugTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.804E0CF0-0DAB-407D-AF6A-E42B242B7C89" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.MonoDroid LastDeploySdkVersion="33.0.68" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+</Properties>
