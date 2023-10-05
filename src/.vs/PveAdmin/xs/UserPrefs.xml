@@ -6,40 +6,33 @@
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Pages/Vm.razor">
+  <MonoDevelop.Ide.Workbench ActiveDocument="PveAdmin.csproj">
     <Files>
-      <File FileName="Properties/launchSettings.json" />
-      <File FileName="Pages/Host.razor" Line="50" Column="1" />
-      <File FileName="PveAdmin.cs" Line="49" Column="12" />
-      <File FileName="Pages/Monitor.razor" Line="6" Column="1" />
-      <File FileName="Pages/Setting.razor" Line="58" Column="10" />
-      <File FileName="Pages/Vm.razor" Line="102" Column="2" />
-      <File FileName="MauiProgram.cs" Line="11" Column="25" />
-      <File FileName="Main.razor" />
-      <File FileName="App.xaml.cs" Line="1" Column="1" />
-      <File FileName="MainPage.xaml.cs" Line="1" Column="1" />
-      <File FileName="_Imports.razor" Line="10" Column="28" />
+      <File FileName="Pages/Host.razor" Line="57" Column="59" />
+      <File FileName="Pages/Monitor.razor" Line="78" Column="1" />
+      <File FileName="Pages/Vm.razor" Line="132" Column="59" />
+      <File FileName="Pages/Setting.razor" Line="9" Column="1" />
+      <File FileName="PveAdmin.cs" Line="63" Column="32" />
+      <File FileName="MauiProgram.cs" Line="20" Column="29" />
+      <File FileName="_Imports.razor" Line="1" Column="1" />
+      <File FileName="Pages/Index.razor" Line="1" Column="1" />
       <File FileName="Platforms/MacCatalyst/Program.cs" Line="13" Column="1" />
-      <File FileName="Pages/Index.razor" Line="10" Column="1" />
-      <File FileName="Platforms/MacCatalyst/AppDelegate.cs" />
-      <File FileName="Platforms/iOS/AppDelegate.cs" />
-      <File FileName="Platforms/Android/MainApplication.cs" />
-      <File FileName="Platforms/iOS/Info.plist" />
-      <File FileName="Platforms/iOS/Program.cs" />
-      <File FileName="Platforms/MacCatalyst/Info.plist" />
+      <File FileName="MainPage.xaml" Line="1" Column="1" />
+      <File FileName="MainPage.xaml.cs" Line="1" Column="1" />
+      <File FileName="wwwroot/index.html" Line="26" Column="59" />
+      <File FileName="PveAdmin.csproj" Line="40" Column="21" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="PveAdmin">
-            <Node name="PveAdmin">
-              <Node name="Pages" expanded="True">
-                <Node name="Vm.razor" selected="True" />
-              </Node>
+            <Node name="PveAdmin" expanded="True" selected="True">
+              <Node name="Pages" expanded="True" />
               <Node name="Platforms" expanded="True">
                 <Node name="MacCatalyst" expanded="True" />
               </Node>
-              <Node name="Properties" expanded="True" />
+              <Node name="Shared" expanded="True" />
+              <Node name="wwwroot" expanded="True" />
               <Node name="App.xaml" expanded="True" />
               <Node name="MainPage.xaml" expanded="True" />
             </Node>
