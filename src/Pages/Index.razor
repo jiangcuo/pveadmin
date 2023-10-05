@@ -5,18 +5,18 @@
 欢迎使用PveAdmin
 
 <div class="line">
-    <button class="empty" @onclick="@GetNode">点击测试</button>
+    <button class="empty" @onclick="@GetNode">点击登陆</button>
 </div>
 
 
 @code{
 
     public async static void GetNode()
-    {
-        await Options.GetResAsync();
-        await Application.Current.MainPage.DisplayAlert("测试成功", Vars.NodeList.ToString(), "确定");
+        {
+            if (await Options.GetResAsync()) {
+                await Application.Current.MainPage.DisplayAlert("登陆成功", "请继续", "确定");
+            }
     }
 
-    
 
-}
+    }

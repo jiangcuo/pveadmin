@@ -1,5 +1,81 @@
 ﻿@page "/monitor"
+@using System.Web;
 
-<h1>这是监控页面</h1>
 
-Welcome to your new app.
+<iframe src=@src width="800" height="600"></iframe>
+
+<div class="st-3">
+    <button class="empty" @onclick="GetCookie">查看cookie</button>
+</div>
+
+
+
+@code
+{
+
+    public static string src = null;
+    public static string vmid = "3146";
+    public static string node = "snode1";
+    public static string url = null;
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCookie();
+        await ConnectWebSocket();
+        src = url;
+
+    }
+    public async static Task GetCookie()
+    {
+        var client = new PveClient(Vars.Host, Vars.HostPort);
+        if (await client.Login(Vars.UserFullname, Vars.UserPassword))
+        {
+            var vm = client.Nodes[node].Qemu[int.Parse(vmid)];
+            var vmstatus = await vm.Status.Current.VmStatus();
+            JObject vmstatus_json = JObject.Parse(JsonConvert.SerializeObject(vmstatus.Response, Newtonsoft.Json.Formatting.Indented));
+            string vm_status = vmstatus_json["data"]["status"].ToString();
+            if (vm_status == "running")
+            {
+
+                // await Application.Current.MainPage.DisplayAlert("虚拟机已开机", "正在创建虚拟机vnc", "确定");
+
+                // 创建vnc
+                var vm_vnccreate = await vm.Vncproxy.Vncproxy(true, true);
+                JObject vm_vnccreate_json = JObject.Parse(JsonConvert.SerializeObject(vm_vnccreate.Response, Newtonsoft.Json.Formatting.Indented));
+                string vm_vnc_password = vm_vnccreate_json["data"]["password"].ToString();
+                string vm_vnc_ticket = vm_vnccreate_json["data"]["ticket"].ToString();
+                string vm_vnc_port = vm_vnccreate_json["data"]["port"].ToString();
+
+                // 创建websocket
+                var vm_vnc_websocket = await vm.Vncwebsocket.Vncwebsocket(int.Parse(vm_vnc_port), vm_vnc_ticket);
+                JObject vm_vnc_websocket_json = JObject.Parse(JsonConvert.SerializeObject(vm_vnc_websocket.Response, Newtonsoft.Json.Formatting.Indented));
+                vm_vnc_port = vm_vnc_websocket_json["data"]["port"].ToString();
+
+                // 创建url
+                string path = "api2/json/nodes/" + node + "/kvm/vncwebsocket?port=" + vm_vnc_port + "&vncticket=" + HttpUtility.UrlEncode(vm_vnc_ticket);
+                url = "/novnc/vnc.html?autoconnect =true&encrypt=true&host=" + Vars.Host + "&port=8006&password=" + HttpUtility.UrlEncode(vm_vnc_password) + "&path=" + HttpUtility.UrlEncode(path);
+                // await Application.Current.MainPage.DisplayAlert("虚拟机已开机", url, "确定");
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("虚拟机未开机", "请开机再继续", "确定");
+            }
+        }
+    }
+
+    [Inject] private IJSRuntime JSRuntime { get; set; }
+
+    private async Task ConnectWebSocket()
+    {
+        // WebSocket的URL
+        var webSocketUrl = Vars.Host;
+
+        // 要添加的Cookie值
+        var cookieValue = "PVEAuthCookie=" + Vars.PveCookie;
+
+        // 调用 JavaScript Interop 函数来模拟 WebSocket 连接
+        await JSRuntime.InvokeVoidAsync("blazorWebSocketInterop.simulateWebSocket", webSocketUrl, cookieValue);
+
+    }
+}
+
+

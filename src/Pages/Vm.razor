@@ -2,4 +2,222 @@
 
 <h1>这是虚拟机管理页面</h1>
 
+@if (Vars.NodeList != null)
+{
+    @foreach (var item in Vars.VmList["data"])
+        {
+            string VMname = item["name"].ToString();//VM名称
+            string VMid = item["vmid"].ToString(); //VMid
+            string VMstatus = item["status"].ToString(); //VM状态{开机：关机}
+            string VMcpumax = item["maxcpu"].ToString(); //VM最大的cpu
+            string VMnodes = item["node"].ToString(); //虚拟机所在的节点
+            string VMtypes = item["type"].ToString(); //虚拟机的类型qemu:lxc
 
+            //处理vm的内存
+            long VMmemMax_tmp = long.Parse(item["maxmem"].ToString());
+            long VMmemorymax = VMmemMax_tmp / 1000 / 1000 / 1000;
+
+            string VMcpunow = "-";
+            string VMmemorynow = "-";
+            string VMnetin = "-";
+            string VMnetout = "-";
+            bool VMha_status = false;
+            bool VMtemplare = false;
+
+            if (VMstatus == "running") //如果虚拟机在线，则去获取状态
+            {
+                //处理正在运行的内存
+                VMmemMax_tmp = long.Parse(item["mem"].ToString());
+                VMmemorynow = (VMmemMax_tmp / 1000 / 1000 / 1000).ToString();
+                //处理正在运行的cpu
+
+                //处理网络流量
+                long VMnetin_tmp = long.Parse(item["netin"].ToString());
+                VMnetin = (VMnetin_tmp / 1000 / 1000 / 1000).ToString();
+                long VMnetout_tmp = long.Parse(item["netout"].ToString());
+                VMnetout = (VMnetout_tmp / 1000 / 1000 / 1000).ToString();
+                VMstatus = "正在运行";
+            }
+            else
+            {
+                VMstatus = "已关机";
+            }
+            /*
+            vmstatus"
+
+                VMbackup_status,
+                VMagent_status,
+                VMautostart_status,
+                VMsnapshot_status,
+            */
+            //  var res = await GetVMconfigStatus(VMid, VMnodes, VMtypes,"VMha_status");
+
+            //判断ha状态
+            try
+            {
+                string VMha_status_tmp = item["hastate"].ToString();
+                VMha_status = true;
+            }
+            catch
+            {
+
+            }
+
+            //判断是否是模版
+
+            try
+            {
+                string VMtemplare_tmp = item["template"].ToString();
+                VMtemplare = true;
+            }
+            catch
+            {
+
+            }
+
+            //判断是否有agent
+
+            //   var VMagent = await GetVMconfigStatus(VMid, VMnodes, VMtypes, "VMagent_status");
+
+
+        <div class="content">
+            <div class="cst-1">
+                <p>虚拟机列表为: @VMid 名称：@VMname &nbsp;&nbsp;状态为：@VMstatus&nbsp;&nbsp;cpu数量为：@VMcpumax &nbsp;&nbsp;已使用cpu：@VMcpunow&nbsp;&nbsp; 内存大小为：@VMmemorymax &nbsp;&nbsp;已使用内存:@VMmemorynow </p>
+                <p>所在节点：@VMnodes 类型为：@VMtypes &nbsp;&nbsp; @VMbackup_status&nbsp;&nbsp; @VMagent_status &nbsp;&nbsp; @VMautostart_status&nbsp;&nbsp; @VMsnapshot_status  </p>
+            </div>
+
+        </div>
+    }
+}
+else
+{
+    <div class="content">
+        <div class="cst-1">
+            <p>请登录</p>
+        </div>
+
+    </div>
+}
+
+@code{
+    private string VMbackup_status = "VMbackup:未有备份";
+    private string VMagent_status = "VMAgent:未启用";
+    private string VMautostart_status = "VMautostart: 未开启开机启动";
+    private string VMsnapshot_status = "VMsnapshot: 从未进行快照";
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        string[] result = await GetVMconfigStatus("102", "pve", "qemu");
+        if (result[0] != null)
+        {
+            VMbackup_status = "VMbackup:已开启";
+        }
+        if (result[1] != null)
+        {
+            VMagent_status = "VMAgent:已启用";
+        }
+        if (result[2] != null)
+        {
+            VMautostart_status = "VMautostart: 已配置开机启动";
+        }
+        if (result[3] != null)
+        {
+            VMsnapshot_status = "VMsnapshot: 存在快照";
+        }
+    }
+    public async Task<string[]> GetVMconfigStatus(string VMid, string VMnodes, string VMtypes)
+    {
+        string[] result = { null, null, null, null };
+        var client = new PveClient(Vars.Host,Vars.HostPort);
+        if (await client.Login(Vars.UserName, Vars.UserPassword))
+        {
+            string VMconfig = null;
+            JObject VMconfig_json = null;
+            JObject VMconfig_json_snapshot = null;
+            string VMconfig_snapshot = null;
+            Corsinvest.ProxmoxVE.Api.Result vmconfig = null;
+            Corsinvest.ProxmoxVE.Api.Result vmsnapshot = null;
+            if (VMtypes == "qemu" || VMtypes == "lxc")
+            {
+
+                if (VMtypes == "qemu")
+                {
+                    var vm = client.Nodes[VMnodes].Qemu[VMid];
+                    vmconfig = await vm.Config.VmConfig();
+                    vmsnapshot = await vm.Snapshot.SnapshotList();
+                }
+                else if (VMtypes == "lxc")
+                {
+                    var vm = client.Nodes[VMnodes].Lxc[VMid];
+                    vmconfig = await vm.Config.VmConfig();
+                    vmsnapshot = await vm.Snapshot.List();
+                }
+
+                VMconfig = JsonConvert.SerializeObject(vmconfig.Response, Newtonsoft.Json.Formatting.Indented);
+                VMconfig_snapshot = JsonConvert.SerializeObject(vmsnapshot.Response, Newtonsoft.Json.Formatting.Indented);
+                VMconfig_json = JObject.Parse(VMconfig);
+                VMconfig_json_snapshot = JObject.Parse(VMconfig_snapshot);
+
+                // VMbackupStatus
+                var Back_res = await client.Nodes[VMnodes].Storage.Index("backup");
+                JObject Back_res_json = JObject.Parse(JsonConvert.SerializeObject(Back_res.Response, Newtonsoft.Json.Formatting.Indented));
+                string Backup_check = Back_res_json["data"].ToString();
+                if (Backup_check != @"[]")
+                {
+                    foreach (var item in Back_res_json["data"])
+                    {
+                        string storage_s = item["storage"].ToString();
+                        var Back_vm_res = await client.Nodes[VMnodes].Storage[storage_s].Content.Index("backup", int.Parse(VMid));
+
+                        JObject Back_vm_res_json = JObject.Parse(JsonConvert.SerializeObject(Back_vm_res.Response, Newtonsoft.Json.Formatting.Indented));
+                        string Back_vm_res_check = Back_vm_res_json["data"].ToString();
+                        if (Back_vm_res_check != @"[]")
+                        {
+                            result[0] = "get";
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("获取虚拟机配置", "没有启用备份存储", "确定");
+                }
+
+                // VMAgent_Status
+                try
+                {
+                    string ss = VMconfig_json["data"]["agent"].ToString();
+                    result[1] = "get";
+                }
+                catch { }
+                //VMautostart_status
+                try
+                {
+                    string ss = VMconfig_json["data"]["onboot"].ToString();
+                    result[2] = "get";
+                }
+                catch { }
+                // "VMsnapshot_status"
+                try
+                {
+                    string ss = VMconfig_json_snapshot["data"][0]["name"].ToString();
+                    result[3] = "get";
+                }
+                catch { }
+
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("获取虚拟机配置", "出现未知错误", "确定");
+                return result;
+            }
+        }
+        else
+        {
+            await Application.Current.MainPage.DisplayAlert("连接失败", Vars.Host, "确定");
+            return result;
+        }
+        return result;
+    }
+}

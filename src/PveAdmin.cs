@@ -21,6 +21,7 @@ namespace PveAdmin;
 public class Vars {
 
     public static string Host { get; set; } = null;
+    public static int HostPort { get; set; } = 8006;
     public static string UserFullname { get; set; } = null;
     public static string UserDomain { get; set; } = null;
     public static string UserName { get; set; } = null;
@@ -32,6 +33,7 @@ public class Vars {
     public static string NodeIp { get; set; } = null;
     public static string NodeName { get; set; } = null;
     public static string UserPasswordEntryed { get; set; } = null;
+    public static string PveCookie { get; set; } = null;
     public static bool SslVerified { get; set; } = true;
     public static JObject VmList { get; set; } = null;
     public static JObject NodeList { get; set; } = null;
@@ -42,25 +44,35 @@ public class Vars {
 public class Options
 {
 
-    public static async Task GetResAsync()
+    public static async Task<bool> GetResAsync()
     {
-
-        var client = new PveClient(Vars.Host);
-        if (await client.Login(Vars.UserName, Vars.UserPassword, Vars.UserDomain))
+        if (Vars.UserPassword != null && Vars.UserName != null && Vars.Host != null)
         {
-            var res = await client.Get("/cluster/resources?type=vm");
-            string datas = JsonConvert.SerializeObject(res.ResponseToDictionary, Newtonsoft.Json.Formatting.Indented);
-            Vars.VmList = JObject.Parse(datas);
-            res = await client.Get("/cluster/resources?type=node");
-            datas = JsonConvert.SerializeObject(res.ResponseToDictionary, Newtonsoft.Json.Formatting.Indented);
-            Vars.NodeList = JObject.Parse(datas);
-            res = await client.Get("/cluster/resources?type=storage");
-            datas = JsonConvert.SerializeObject(res.ResponseToDictionary, Newtonsoft.Json.Formatting.Indented);
-            Vars.StorageList = JObject.Parse(datas);
+            var client = new PveClient(Vars.Host,Vars.HostPort);
+            if (await client.Login(Vars.UserFullname, Vars.UserPassword))
+            {
+                var res = await client.Get("/cluster/resources?type=vm");
+                string datas = JsonConvert.SerializeObject(res.ResponseToDictionary, Newtonsoft.Json.Formatting.Indented);
+                Vars.VmList = JObject.Parse(datas);
+                res = await client.Get("/cluster/resources?type=node");
+                datas = JsonConvert.SerializeObject(res.ResponseToDictionary, Newtonsoft.Json.Formatting.Indented);
+                Vars.NodeList = JObject.Parse(datas);
+                res = await client.Get("/cluster/resources?type=storage");
+                datas = JsonConvert.SerializeObject(res.ResponseToDictionary, Newtonsoft.Json.Formatting.Indented);
+                Vars.StorageList = JObject.Parse(datas);
+                Vars.PveCookie = client.PVEAuthCookie;
+                return true;
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("测试失败", Vars.Host.ToString() + " " + client.LastResult.StatusCode.ToString(), "确定");
+                return false;
+            }
         }
         else {
-           
-            await Application.Current.MainPage.DisplayAlert("测试失败", Vars.Host.ToString()+" " + client.LastResult.StatusCode.ToString(), "确定");
+
+            await Application.Current.MainPage.DisplayAlert("获取资源失败","请填写服务器和配置信息", "确定");
+            return false;
         }
 
     }
@@ -74,10 +86,12 @@ public class Options
         {
             Vars.UserPasswordEntryed = AesEncryptHelper.EncryptAes(Vars.UserPassword);
         }
+
         JObject conf = new JObject
             {
                 {"username",Vars.UserFullname},
                 {"host", Vars.Host},
+                {"port", Vars.HostPort},
                 {"password",Vars.UserPasswordEntryed }
             };
         try
@@ -109,6 +123,7 @@ public class Options
                 Vars.UserFullname = tempdata["username"].ToString();
                 Vars.UserPasswordEntryed = tempdata["password"].ToString();
                 Vars.Host = tempdata["host"].ToString();
+                Vars.HostPort = int.Parse(tempdata["port"].ToString());
                 string[] UserNameParse = Vars.UserFullname.Split(new char[] { '@' });
                 try
                 {
@@ -156,7 +171,7 @@ public class Options
 
     public static async Task<string> TestServerAsync() {
 
-        var client = new PveClient(Vars.Host);
+        var client = new PveClient(Vars.Host,Vars.HostPort);
         string datas = "";
         try
         {

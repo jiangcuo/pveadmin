@@ -16,6 +16,10 @@
             <div class="st-3">
                 <input placeholder="请输入" @bind="@Vars.Host" />
             </div>
+            <div class="st-2">服务器端口：</div>
+            <div class="st-3">
+                <input placeholder="请输入" @bind="@Vars.HostPort" />
+            </div>
         </div>
         <div class="content">
             <div class="st-2">账号：</div>
@@ -31,7 +35,7 @@
         </div>
         <div class="line">
             <button class="empty" @onclick="@TestServer">点击测试</button>
-            <button class="empty" @onclick="@Saveconfig">点击保存</button>
+            <button class="empty" @onclick="@Saveconfig">保存并且刷新</button>
         </div>
     </div>
 </div>
@@ -62,8 +66,9 @@
         }
     }
 
-    public void Saveconfig()
+    public async void Saveconfig()
     {
         Options.SaveConfig();
+        await Options.GetResAsync();
     }
     }

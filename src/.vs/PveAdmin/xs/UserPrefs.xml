@@ -1,17 +1,48 @@
 ﻿<Properties StartupConfiguration="{8292B337-AF5C-4BFE-BFB7-2C3BA8E74727}|Default">
-  <MonoDevelop.Ide.ItemProperties.PveAdmin PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.804E0CF0-0DAB-407D-AF6A-E42B242B7C89" />
+  <Xamarin.Addins.Core.Project ActiveDebugTarget="MyAppleMacCatalystID" />
+  <MonoDevelop.Ide.ItemProperties.PveAdmin PreferredExecutionTarget="MyAppleMacCatalystID" />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.Workbench ActiveDocument="Pages/Vm.razor">
     <Files>
-      <File FileName="Pages/Index.razor" Line="6" Column="1" />
-      <File FileName="Pages/Setting.razor" Line="14" Column="1" />
-      <File FileName="Pages/Monitor.razor" Line="1" Column="1" />
-      <File FileName="Pages/Vm.razor" Line="5" Column="1" />
+      <File FileName="Properties/launchSettings.json" />
+      <File FileName="Pages/Host.razor" Line="50" Column="1" />
+      <File FileName="PveAdmin.cs" Line="49" Column="12" />
+      <File FileName="Pages/Monitor.razor" Line="6" Column="1" />
+      <File FileName="Pages/Setting.razor" Line="58" Column="10" />
+      <File FileName="Pages/Vm.razor" Line="102" Column="2" />
+      <File FileName="MauiProgram.cs" Line="11" Column="25" />
+      <File FileName="Main.razor" />
+      <File FileName="App.xaml.cs" Line="1" Column="1" />
+      <File FileName="MainPage.xaml.cs" Line="1" Column="1" />
+      <File FileName="_Imports.razor" Line="10" Column="28" />
+      <File FileName="Platforms/MacCatalyst/Program.cs" Line="13" Column="1" />
+      <File FileName="Pages/Index.razor" Line="10" Column="1" />
+      <File FileName="Platforms/MacCatalyst/AppDelegate.cs" />
+      <File FileName="Platforms/iOS/AppDelegate.cs" />
+      <File FileName="Platforms/Android/MainApplication.cs" />
+      <File FileName="Platforms/iOS/Info.plist" />
+      <File FileName="Platforms/iOS/Program.cs" />
+      <File FileName="Platforms/MacCatalyst/Info.plist" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
-          <Node name="PveAdmin" expanded="True">
-            <Node name="PveAdmin" selected="True" />
+          <Node name="PveAdmin">
+            <Node name="PveAdmin">
+              <Node name="Pages" expanded="True">
+                <Node name="Vm.razor" selected="True" />
+              </Node>
+              <Node name="Platforms" expanded="True">
+                <Node name="MacCatalyst" expanded="True" />
+              </Node>
+              <Node name="Properties" expanded="True" />
+              <Node name="App.xaml" expanded="True" />
+              <Node name="MainPage.xaml" expanded="True" />
+            </Node>
           </Node>
         </State>
       </Pad>
@@ -20,12 +51,6 @@
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <Xamarin.Addins.Core.Project ActiveDebugTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.804E0CF0-0DAB-407D-AF6A-E42B242B7C89" />
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MultiItemStartupConfigurations />
   <MonoDevelop.MonoDroid LastDeploySdkVersion="33.0.68" />
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
 </Properties>

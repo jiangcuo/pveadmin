@@ -2,7 +2,12 @@
 
 <h1>这是节点管理页面</h1>
 
-@foreach (var item in Vars.NodeList["data"])
+
+
+@if (Vars.NodeList != null)
+{
+
+    @foreach (var item in Vars.NodeList["data"])
     {
         nodename = item["node"].ToString();
         string nodestatus = item["status"].ToString();
@@ -16,18 +21,28 @@
             nodememory = nodememorys.ToString() + "G";
         }
 
-    <div class="content">
-        <div class="cst-1">
-            <p>节点列表为： @nodename , 状态为：@nodestatus ，cpu数量为：@nodecpus , 内存大小为：@nodememory ip地址为：@nodeip </p>
+        <div class="content">
+            <div class="cst-1">
+                <p>节点列表为： @nodename , 状态为：@nodestatus ，cpu数量为：@nodecpus , 内存大小为：@nodememory ip地址为：@nodeip </p>
+            </div>
+
         </div>
 
+    }
+
+    <div class="st-3">
+        <button class="empty">查看节点ip</button>
     </div>
 
 }
+else
+{
 
-<div class="st-3">
-    <button class="empty">查看节点ip</button>
-</div>
+    <div class="st-3">
+        <button class="empty">请登录</button>
+    </div>
+
+}
 @code{
     public static string? nodeip;
     public static string? nodename;
@@ -39,7 +54,7 @@
 
     public static async Task<string> GetNodeIp(string nodename)
     {
-        var client = new PveClient(Vars.Host);
+        var client = new PveClient(Vars.Host,Vars.HostPort);
         string result = "";
         if (await client.Login(Vars.UserName, Vars.UserPassword, Vars.UserDomain))
         {
@@ -57,4 +72,4 @@
         }
         return result;
     }
-    }
+}
