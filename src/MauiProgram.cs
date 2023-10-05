@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.WebView.Maui;
 using Microsoft.Extensions.Logging;
-
+using UtilsCore.Cors;
 
 using PveAdmin.Data;
 
@@ -19,8 +19,15 @@ public static class MauiProgram
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 			});
-
-		builder.Services.AddMauiBlazorWebView();
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("CorsPolicy",
+                builder => builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+        });
+        builder.Services.AddMauiBlazorWebView();
 		builder.Services.AddBlazorWebViewDeveloperTools();
         builder.Logging.AddDebug();
 

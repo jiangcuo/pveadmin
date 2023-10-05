@@ -4,6 +4,7 @@
 
 <iframe src=@src width="800" height="600"></iframe>
 
+
 <div class="st-3">
     <button class="empty" @onclick="GetCookie">查看cookie</button>
 </div>
@@ -51,9 +52,10 @@
                 vm_vnc_port = vm_vnc_websocket_json["data"]["port"].ToString();
 
                 // 创建url
-                string path = "api2/json/nodes/" + node + "/kvm/vncwebsocket?port=" + vm_vnc_port + "&vncticket=" + HttpUtility.UrlEncode(vm_vnc_ticket);
-                url = "/novnc/vnc.html?autoconnect =true&encrypt=true&host=" + Vars.Host + "&port=8006&password=" + HttpUtility.UrlEncode(vm_vnc_password) + "&path=" + HttpUtility.UrlEncode(path);
+                string path = "api2/json/nodes/" + node + "/qemu/" + vmid + "/vncwebsocket?port=" + vm_vnc_port + "&vncticket=" + HttpUtility.UrlEncode(vm_vnc_ticket);
+                url = "/novnc/vnc.html?autoconnect=true&reconnect=1&encrypt=true&host=" + Vars.Host + "&port=8006&password=" + HttpUtility.UrlEncode(vm_vnc_password) + "&path=" + HttpUtility.UrlEncode(path);;
                 // await Application.Current.MainPage.DisplayAlert("虚拟机已开机", url, "确定");
+            //    url = "https://" + Vars.Host + ":" + Vars.HostPort + "/?console=kvm&novnc=1&node=" + node + "&resize=1&vmid=" + vmid + "&path=" + HttpUtility.UrlEncode(path);
             }
             else
             {
@@ -70,11 +72,9 @@
         var webSocketUrl = Vars.Host;
 
         // 要添加的Cookie值
-        var cookieValue = "PVEAuthCookie=" + Vars.PveCookie;
+        var cookieValue = HttpUtility.UrlEncode(Vars.PveCookie);
 
-        // 调用 JavaScript Interop 函数来模拟 WebSocket 连接
         await JSRuntime.InvokeVoidAsync("blazorWebSocketInterop.simulateWebSocket", webSocketUrl, cookieValue);
-
     }
 }
 
