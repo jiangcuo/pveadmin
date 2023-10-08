@@ -34,6 +34,8 @@ public class Vars {
     public static string NodeName { get; set; } = null;
     public static string UserPasswordEntryed { get; set; } = null;
     public static string PveCookie { get; set; } = null;
+
+    public static string PveCSRF { get; set; } = null;
     public static bool SslVerified { get; set; } = true;
     public static JObject VmList { get; set; } = null;
     public static JObject NodeList { get; set; } = null;
@@ -61,6 +63,7 @@ public class Options
                 datas = JsonConvert.SerializeObject(res.ResponseToDictionary, Newtonsoft.Json.Formatting.Indented);
                 Vars.StorageList = JObject.Parse(datas);
                 Vars.PveCookie = client.PVEAuthCookie;
+                Vars.PveCSRF = client.CSRFPreventionToken;
                 return true;
             }
             else

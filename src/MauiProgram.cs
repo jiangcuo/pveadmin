@@ -27,6 +27,9 @@ public static class MauiProgram
                 .AllowAnyHeader()
                 .AllowCredentials());
         });
+        Environment.SetEnvironmentVariable(
+"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+"--disable-web-security");
         builder.Services.AddMauiBlazorWebView();
 		builder.Services.AddBlazorWebViewDeveloperTools();
         builder.Logging.AddDebug();

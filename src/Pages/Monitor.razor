@@ -40,20 +40,20 @@
                 // await Application.Current.MainPage.DisplayAlert("虚拟机已开机", "正在创建虚拟机vnc", "确定");
 
                 // 创建vnc
-                var vm_vnccreate = await vm.Vncproxy.Vncproxy(true, true);
+                var vm_vnccreate = await vm.Vncproxy.Vncproxy(false, true);
                 JObject vm_vnccreate_json = JObject.Parse(JsonConvert.SerializeObject(vm_vnccreate.Response, Newtonsoft.Json.Formatting.Indented));
-                string vm_vnc_password = vm_vnccreate_json["data"]["password"].ToString();
+                //string vm_vnc_password = vm_vnccreate_json["data"]["password"].ToString();
                 string vm_vnc_ticket = vm_vnccreate_json["data"]["ticket"].ToString();
                 string vm_vnc_port = vm_vnccreate_json["data"]["port"].ToString();
 
                 // 创建websocket
-                var vm_vnc_websocket = await vm.Vncwebsocket.Vncwebsocket(int.Parse(vm_vnc_port), vm_vnc_ticket);
-                JObject vm_vnc_websocket_json = JObject.Parse(JsonConvert.SerializeObject(vm_vnc_websocket.Response, Newtonsoft.Json.Formatting.Indented));
-                vm_vnc_port = vm_vnc_websocket_json["data"]["port"].ToString();
+             //   var vm_vnc_websocket = await vm.Vncwebsocket.Vncwebsocket(int.Parse(vm_vnc_port), vm_vnc_ticket);
+              //  JObject vm_vnc_websocket_json = JObject.Parse(JsonConvert.SerializeObject(vm_vnc_websocket.Response, Newtonsoft.Json.Formatting.Indented));
+            //    vm_vnc_port = vm_vnc_websocket_json["data"]["port"].ToString();
 
                 // 创建url
                 string path = "api2/json/nodes/" + node + "/qemu/" + vmid + "/vncwebsocket?port=" + vm_vnc_port + "&vncticket=" + HttpUtility.UrlEncode(vm_vnc_ticket);
-                url = "/novnc/vnc.html?autoconnect=true&reconnect=1&encrypt=true&host=" + Vars.Host + "&port=8006&password=" + HttpUtility.UrlEncode(vm_vnc_password) + "&path=" + HttpUtility.UrlEncode(path);;
+                url = "/novnc/vnc.html?autoconnect=true&encrypt=true&host=" + Vars.Host + "&port=8006&password=" + HttpUtility.UrlEncode(vm_vnc_ticket) + "&path=" + HttpUtility.UrlEncode(path); ;
                 // await Application.Current.MainPage.DisplayAlert("虚拟机已开机", url, "确定");
             //    url = "https://" + Vars.Host + ":" + Vars.HostPort + "/?console=kvm&novnc=1&node=" + node + "&resize=1&vmid=" + vmid + "&path=" + HttpUtility.UrlEncode(path);
             }
@@ -72,7 +72,7 @@
         var webSocketUrl = Vars.Host;
 
         // 要添加的Cookie值
-        var cookieValue = HttpUtility.UrlEncode(Vars.PveCookie);
+        var cookieValue = Vars.PveCookie;
 
         await JSRuntime.InvokeVoidAsync("blazorWebSocketInterop.simulateWebSocket", webSocketUrl, cookieValue);
     }
